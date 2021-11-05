@@ -1,10 +1,10 @@
 /// <reference path="../TSDef/p5.global-mode.d.ts" />
 
-var inc = 10;
+var inc = 0.1;
 var scl = 10;
 var cols, rows;
 
-var zoff = 1;
+var zoff = 0;
 
 var fr;
 
@@ -13,21 +13,24 @@ var particles = [];
 var flowfield;
 
 function setup() {
-  createCanvas(900, 900);
-  colorMode(HSB, 255);
+  createCanvas(800, 800);
+  colorMode(RGB);
   cols = floor(width / scl);
   rows = floor(height / scl);
   fr = createP('');
 
   flowfield = new Array(cols * rows);
 
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 300; i++) {
     particles[i] = new Particle();
   }
-  background(250);
+
+  background(245, 72,66);
+  
 }
 
 function draw() {
+  
   var yoff = 0;
   for (var y = 0; y < rows; y++) {
     var xoff = 0;
@@ -35,7 +38,7 @@ function draw() {
       var index = x + y * cols;
       var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
       var v = p5.Vector.fromAngle(angle);
-      v.setMag(15);
+      v.setMag(1);
       flowfield[index] = v;
       xoff += inc;
       stroke(0, 50);
@@ -48,7 +51,7 @@ function draw() {
     }
     yoff += inc;
 
-    zoff += 0.0005;
+    zoff += 0.0003;
   }
 
   for (var i = 0; i < particles.length; i++) {
@@ -60,3 +63,17 @@ function draw() {
 
   fr.html(floor(frameRate()));
 }
+
+function mousePressed() {
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    const writer = createWriter('perlin-noise-output.png');
+    // for (let i = 0; i < 10; i++) {
+    //   writer.print(i * i);
+    // }
+    //save('myCanvas.jpg');
+    writer.save();
+    writer.close();
+    writer.clear();
+  }
+}
+

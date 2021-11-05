@@ -1,62 +1,96 @@
-/// <reference path="../TSDef/p5.global-mode.d.ts" />
-
-var inc = 10;
-var scl = 10;
-var cols, rows;
-
-var zoff = 1;
-
-var fr;
-
-var particles = [];
-
-var flowfield;
 
 function setup() {
-  createCanvas(900, 900);
-  colorMode(HSB, 255);
-  cols = floor(width / scl);
-  rows = floor(height / scl);
-  fr = createP('');
-
-  flowfield = new Array(cols * rows);
-
-  for (var i = 0; i < 30; i++) {
-    particles[i] = new Particle();
-  }
-  background(250);
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100)
+  noStroke();
 }
 
 function draw() {
-  var yoff = 0;
-  for (var y = 0; y < rows; y++) {
-    var xoff = 0;
-    for (var x = 0; x < cols; x++) {
-      var index = x + y * cols;
-      var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
-      var v = p5.Vector.fromAngle(angle);
-      v.setMag(15);
-      flowfield[index] = v;
-      xoff += inc;
-      stroke(0, 50);
-      // push();
-      // translate(x * scl, y * scl);
-      // rotate(v.heading());
-      // strokeWeight(1);
-      // line(0, 0, scl, 0);
-      // pop();
-    }
-    yoff += inc;
+  background(150, 50, 20);
 
-    zoff += 0.0005;
-  }
+  //loop through all circlesin the array 
+  
+    //find out if the circle is overlapping with any previous circles, if so then stop growing
 
-  for (var i = 0; i < particles.length; i++) {
-    particles[i].follow(flowfield);
-    particles[i].update();
-    particles[i].edges();
-    particles[i].show();
-  }
+    //find out if the circle is stuck on the edge, if so then stop growing
 
-  fr.html(floor(frameRate()));
+
+  //draw new circles each frame 
+  drawCircle(width / 2, 280, 6);
+
+  //can't make any new circles 
 }
+
+function drawCircle(x, radius, level) {
+  // 'level' is the variable that terminates the recursion once it reaches 
+  // a certain value (here, 1). If a terminating condition is not 
+  // specified, a recursive function keeps calling itself again and again
+  // until it runs out of stack space - not a favourable outcome! 
+  const tt = (126 * level) / 4.0;
+  fill(tt);
+  ellipse(x, height / 2, radius * 2, radius * 2);
+  if (level > 1) {  
+    // 'level' decreases by 1 at every step and thus makes the terminating condition
+    // attainable
+    level = level - 1;  
+    drawCircle(x - radius / 2, radius / 2, level);
+    drawCircle(x + radius / 2, radius / 2, level);
+  }
+}
+
+// // save this file as sketch.js
+// // Sketch One
+// var s = function( p ) { // p could be any variable name
+//   var x = 100; 
+//   var y = 100;
+//   p.setup = function() {
+//     p.createCanvas(400, 200);
+//   };
+
+//   p.draw = function() {
+//     p.background(0);
+//     p.fill(255);
+//     p.rect(x,y,50,50);
+//   };
+// };
+// var myp5 = new p5(s, 'c1');
+
+// const s = ( p ) => {
+
+//   let x = 100; 
+//   let y = 100;
+
+//   p.setup = function() {
+//     p.createCanvas(700, 410);
+//   };
+
+//   p.draw = function() {
+//     p.background(0);
+//     p.fill(255);
+//     p.rect(x,y,50,50);
+//   };
+// };
+
+// let myp5 = new p5(s); 
+
+// // Sketch Two
+// var t = function( p ) { 
+//   var x = 100.0; 
+//   var y = 100; 
+//   var speed = 2.5; 
+//   p.setup = function() {
+//     p.createCanvas(400, 200);
+//   };
+
+//   p.draw = function() {
+//     p.background(100);
+//     p.fill(1);
+//     x += speed; 
+//     if(x > p.width){
+//       x = 0; 
+//     }
+//     p.ellipse(x,y,50,50);
+
+//   };
+// };
+// var myp5 = new p5(t, 'c2');
